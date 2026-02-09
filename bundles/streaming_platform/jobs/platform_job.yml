@@ -24,9 +24,12 @@ resources:
             autotermination_minutes: 20
 
             spark_conf:
-              # Good defaults for structured streaming stability (adjust later)
               spark.databricks.delta.optimizeWrite.enabled: "true"
               spark.databricks.delta.autoCompact.enabled: "true"
+
+            libraries:
+              - maven:
+                  coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
 
       tasks:
         - task_key: bronze
