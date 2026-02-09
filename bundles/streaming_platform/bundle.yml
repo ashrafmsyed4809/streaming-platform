@@ -21,7 +21,7 @@ targets:
     mode: development
     workspace:
       # Replace with your DEV Databricks workspace URL
-      host: "https://adb-XXXXXX.XX.azuredatabricks.net"
+      host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       run_minutes: 5
       tenant_id: "tenant_demo"
@@ -31,7 +31,7 @@ targets:
     mode: development
     workspace:
       # Replace with your STAGE Databricks workspace URL
-      host: "https://adb-YYYYYY.XX.azuredatabricks.net"
+      host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       run_minutes: 10
       tenant_id: "tenant_demo"
@@ -41,7 +41,7 @@ targets:
     mode: production
     workspace:
       # Replace with your PROD Databricks workspace URL
-      host: "https://adb-ZZZZZZ.XX.azuredatabricks.net"
+      host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       run_minutes: 0
       tenant_id: "tenant_demo"
