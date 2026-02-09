@@ -34,32 +34,47 @@ resources:
       tasks:
         - task_key: bronze
           job_cluster_key: platform_cluster
+          libraries:
+            - maven:
+                coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            # You will create these notebooks later (or adjust paths)
             notebook_path: "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
             base_parameters:
               tenant_id: "{{job.parameters.tenant_id}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
+              site_id: "site_demo"
+              event_type: "temp_humidity.v1"
+
 
         - task_key: silver
           depends_on:
             - task_key: bronze
           job_cluster_key: platform_cluster
+          libraries:
+            - maven:
+                coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
             notebook_path: "/Users/info@justaboutdata.com/streaming-platform/silver/silver_processing"
             base_parameters:
               tenant_id: "{{job.parameters.tenant_id}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
+              site_id: "site_demo"
+              event_type: "temp_humidity.v1"
 
         - task_key: gold
           depends_on:
             - task_key: silver
           job_cluster_key: platform_cluster
+          libraries:
+            - maven:
+                coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
             notebook_path: "/Users/info@justaboutdata.com/streaming-platform/gold/gold_serving"
             base_parameters:
               tenant_id: "{{job.parameters.tenant_id}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
+              site_id: "site_demo"
+              event_type: "temp_humidity.v1"
