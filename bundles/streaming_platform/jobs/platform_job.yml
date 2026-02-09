@@ -1,0 +1,62 @@
+resources:
+  jobs:
+    streaming_platform_job:
+      name: "streaming_platform_${bundle.target}"
+
+      # Optional: prevent overlapping runs in dev/stage
+      max_concurrent_runs: 1
+
+      # Job parameters (visible in Databricks UI + overridable per run)
+      parameters:
+        - name: tenant_id
+          default: ${var.tenant_id}
+        - name: config_file
+          default: ${var.config_file}
+        - name: run_minutes
+          default: ${var.run_minutes}
+
+      job_clusters:
+        - job_cluster_key: platform_cluster
+          new_cluster:
+            spark_version: "14.3.x-scala2.12"
+            node_type_id: "Standard_D4ds_v5"
+            num_workers: 1
+            autotermination_minutes: 20
+
+            spark_conf:
+              # Good defaults for structured streaming stability (adjust later)
+              spark.databricks.delta.optimizeWrite.enabled: "true"
+              spark.databricks.delta.autoCompact.enabled: "true"
+
+      tasks:
+        - task_key: bronze
+          job_cluster_key: platform_cluster
+          notebook_task:
+            # You will create these notebooks later (or adjust paths)
+            notebook_path: "/Repos/${workspace.current_user.userName}/streaming-platform/src/bronze/bronze_ingestion"
+            base_parameters:
+              tenant_id: "{{job.parameters.tenant_id}}"
+              config_file: "{{job.parameters.config_file}}"
+              run_minutes: "{{job.parameters.run_minutes}}"
+
+        - task_key: silver
+          depends_on:
+            - task_key: bronze
+          job_cluster_key: platform_cluster
+          notebook_task:
+            notebook_path: "/Repos/${workspace.current_user.userName}/streaming-platform/src/silver/silver_processing"
+            base_parameters:
+              tenant_id: "{{job.parameters.tenant_id}}"
+              config_file: "{{job.parameters.config_file}}"
+              run_minutes: "{{job.parameters.run_minutes}}"
+
+        - task_key: gold
+          depends_on:
+            - task_key: silver
+          job_cluster_key: platform_cluster
+          notebook_task:
+            notebook_path: "/Repos/${workspace.current_user.userName}/streaming-platform/src/gold/gold_serving"
+            base_parameters:
+              tenant_id: "{{job.parameters.tenant_id}}"
+              config_file: "{{job.parameters.config_file}}"
+              run_minutes: "{{job.parameters.run_minutes}}"

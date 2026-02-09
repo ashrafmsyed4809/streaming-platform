@@ -1,0 +1,48 @@
+bundle:
+  name: streaming_platform
+
+# You can override these per target using variables below
+variables:
+  run_minutes:
+    description: "POC run duration in minutes. 0 means continuous (production)."
+    default: 5
+
+  tenant_id:
+    description: "Tenant (client) identifier"
+    default: "tenant_demo"
+
+  config_file:
+    description: "Path to tenant config file within the repo"
+    default: "configs/tenants/tenant_demo/dev.yml"
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      # Replace with your DEV Databricks workspace URL
+      host: "https://adb-XXXXXX.XX.azuredatabricks.net"
+    variables:
+      run_minutes: 5
+      tenant_id: "tenant_demo"
+      config_file: "configs/tenants/tenant_demo/dev.yml"
+
+  stage:
+    mode: development
+    workspace:
+      # Replace with your STAGE Databricks workspace URL
+      host: "https://adb-YYYYYY.XX.azuredatabricks.net"
+    variables:
+      run_minutes: 10
+      tenant_id: "tenant_demo"
+      config_file: "configs/tenants/tenant_demo/stage.yml"
+
+  prod:
+    mode: production
+    workspace:
+      # Replace with your PROD Databricks workspace URL
+      host: "https://adb-ZZZZZZ.XX.azuredatabricks.net"
+    variables:
+      run_minutes: 0
+      tenant_id: "tenant_demo"
+      config_file: "configs/tenants/tenant_demo/prod.yml"
