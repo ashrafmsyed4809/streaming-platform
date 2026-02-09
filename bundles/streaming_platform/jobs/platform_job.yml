@@ -18,8 +18,8 @@ resources:
       job_clusters:
         - job_cluster_key: platform_cluster
           new_cluster:
-            spark_version: "14.3.x-scala2.12"
-            node_type_id: "Standard_D4ds_v5"
+            spark_version: "DBR: 16.4 LTS (includes Apache Spark 3.5.2, Scala 2.12)"
+            node_type_id: "Standard_D4ds_v4"
             num_workers: 1
             autotermination_minutes: 20
 
