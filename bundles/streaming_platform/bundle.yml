@@ -1,6 +1,9 @@
 bundle:
   name: streaming_platform
 
+include:
+  - "jobs/*.yml"
+
 # You can override these per target using variables below
 variables:
   run_minutes:
