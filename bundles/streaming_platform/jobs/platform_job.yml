@@ -22,6 +22,8 @@ resources:
             node_type_id: "Standard_D4ds_v4"
             num_workers: 1
             autotermination_minutes: 20
+            data_security_mode: "SINGLE_USER"
+            single_user_name: "info@justaboutdata.com"
 
             spark_conf:
               spark.databricks.delta.optimizeWrite.enabled: "true"
