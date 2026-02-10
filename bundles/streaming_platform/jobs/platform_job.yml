@@ -8,6 +8,8 @@ resources:
 
       # Job parameters (visible in Databricks UI + overridable per run)
       parameters:
+        - name: env
+          default: ${bundle.target}
         - name: tenant_id
           default: ${var.tenant_id}
         - name: config_file
@@ -18,6 +20,7 @@ resources:
           default: "site_demo"
         - name: event_type
           default: "temp_humidity.v1"
+
 
 
       job_clusters:
@@ -47,11 +50,13 @@ resources:
           notebook_task:
             notebook_path: "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
             base_parameters:
+              env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
               site_id: "{{job.parameters.site_id}}"
               event_type: "{{job.parameters.event_type}}"
+
 
 
 
@@ -65,11 +70,13 @@ resources:
           notebook_task:
             notebook_path: "/Users/info@justaboutdata.com/streaming-platform/silver/silver_processing"
             base_parameters:
+              env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
               site_id: "{{job.parameters.site_id}}"
               event_type: "{{job.parameters.event_type}}"
+
 
 
         - task_key: gold
@@ -82,8 +89,10 @@ resources:
           notebook_task:
             notebook_path: "/Users/info@justaboutdata.com/streaming-platform/gold/gold_serving"
             base_parameters:
+              env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
               site_id: "{{job.parameters.site_id}}"
               event_type: "{{job.parameters.event_type}}"
+
