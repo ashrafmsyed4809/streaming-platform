@@ -1,0 +1,18 @@
+tenant:
+  tenant_id: "tenant_demo"
+  site_id_default: "site_demo"
+
+ingestion:
+  source: "eventhub"
+  eventhub_name: "iot-sensor-events"
+  consumer_group: "$Default"
+
+storage:
+  base_path: "abfss://streaming@dataengineeringstor.dfs.core.windows.net/platform"
+
+events:
+  allowed_event_types:
+    - "temp_humidity.v1"
+
+runtime:
+  run_minutes: 5
