@@ -50,7 +50,8 @@ resources:
             - maven:
                 coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            notebook_path: "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
+            #notebook_path: "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
+            notebook_path: "${workspace.file_path}/src/bronze/bronze_ingestion"
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
@@ -71,7 +72,8 @@ resources:
             - maven:
                 coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            notebook_path: "/Users/info@justaboutdata.com/streaming-platform/silver/silver_processing"
+            #notebook_path: "/Users/info@justaboutdata.com/streaming-platform/silver/silver_processing"
+            notebook_path: "${workspace.file_path}/src/silver/silver_processing"
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
@@ -91,7 +93,8 @@ resources:
             - maven:
                 coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            notebook_path: "/Users/info@justaboutdata.com/streaming-platform/gold/gold_serving"
+            #notebook_path: "/Users/info@justaboutdata.com/streaming-platform/gold/gold_serving"
+            notebook_path: "${workspace.file_path}/src/gold/gold_serving"
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
