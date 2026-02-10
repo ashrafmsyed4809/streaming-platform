@@ -12,14 +12,16 @@ resources:
           default: ${bundle.target}
         - name: tenant_id
           default: ${var.tenant_id}
-        - name: config_file
-          default: ${var.config_file}
-        - name: run_minutes
-          default: ${var.run_minutes}
         - name: site_id
           default: "site_demo"
         - name: event_type
           default: "temp_humidity.v1"
+        - name: config_file
+          default: ${var.config_file}
+        - name: run_minutes
+          default: ${var.run_minutes}
+
+
 
 
 
@@ -52,10 +54,11 @@ resources:
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
-              config_file: "{{job.parameters.config_file}}"
-              run_minutes: "{{job.parameters.run_minutes}}"
               site_id: "{{job.parameters.site_id}}"
               event_type: "{{job.parameters.event_type}}"
+              config_file: "{{job.parameters.config_file}}"
+              run_minutes: "{{job.parameters.run_minutes}}"
+
 
 
 
@@ -72,10 +75,11 @@ resources:
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
-              config_file: "{{job.parameters.config_file}}"
-              run_minutes: "{{job.parameters.run_minutes}}"
               site_id: "{{job.parameters.site_id}}"
               event_type: "{{job.parameters.event_type}}"
+              config_file: "{{job.parameters.config_file}}"
+              run_minutes: "{{job.parameters.run_minutes}}"
+
 
 
 
@@ -91,8 +95,9 @@ resources:
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
-              config_file: "{{job.parameters.config_file}}"
-              run_minutes: "{{job.parameters.run_minutes}}"
               site_id: "{{job.parameters.site_id}}"
               event_type: "{{job.parameters.event_type}}"
+              config_file: "{{job.parameters.config_file}}"
+              run_minutes: "{{job.parameters.run_minutes}}"
+
 
