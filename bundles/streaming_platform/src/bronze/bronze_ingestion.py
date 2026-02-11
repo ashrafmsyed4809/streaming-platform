@@ -34,7 +34,20 @@ print(f"[runner params] config_file={config_file}")
 import os
 import yaml
 
-cfg_path = os.path.join(os.getcwd(), config_file)  # bundle files root + relative path
+#cfg_path = os.path.join(os.getcwd(), config_file)  # bundle files root + relative path
+def find_bundle_root(start_dir: str) -> str:
+    cur = os.path.abspath(start_dir)
+    for _ in range(10):
+        if os.path.isdir(os.path.join(cur, "configs")):
+            return cur
+        cur = os.path.dirname(cur)
+    raise Exception(f"Could not find bundle root containing /configs from start_dir={start_dir}")
+
+bundle_root = find_bundle_root(os.getcwd())
+cfg_path = os.path.join(bundle_root, config_file)
+
+print("[runner] cwd =", os.getcwd())
+print("[runner] bundle_root =", bundle_root)
 print("[runner] cfg_path =", cfg_path)
 
 with open(cfg_path, "r") as f:
