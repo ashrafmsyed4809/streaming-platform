@@ -29,35 +29,43 @@ print(f"[runner params] config_file={config_file}")
 # COMMAND ----------
 
 # ====== Load tenant config (80/20) ======
-import yaml
+# COMMAND ----------
+# ===== Load tenant config (80/20) =====
 import os
+import yaml
 
-#with open(config_file, "r") as f:
-#    cfg = yaml.safe_load(f) or {}
+cfg_path = os.path.join(os.getcwd(), config_file)  # bundle files root + relative path
+print("[runner] cfg_path =", cfg_path)
 
-cfg_path = os.path.join(os.getcwd(), config_file)
 with open(cfg_path, "r") as f:
-    cfg = yaml.safe_load(f)
+    cfg = yaml.safe_load(f) or {}
 
 # Override from config (single source of truth)
 tenant_id = cfg["tenant"]["tenant_id"]
 site_id = cfg["tenant"].get("site_id_default", site_id)
 
-allowed_event_types = cfg["events"]["allowed_event_types"]
+allowed_event_types = cfg["events"].get("allowed_event_types", [])
 if not allowed_event_types:
     raise Exception("Config error: events.allowed_event_types is empty")
 
-# For Project 01 we run ONE event_type per run:
+# Project 01: one event_type per run (use first one)
 event_type = allowed_event_types[0]
 
-# If config defines run_minutes, let it override widget default
+# runtime override (optional)
 run_minutes = int(cfg.get("runtime", {}).get("run_minutes", run_minutes))
 
+# optional: useful later
+storage_base_path = cfg.get("storage", {}).get("base_path")
+eventhub_name = cfg.get("ingestion", {}).get("eventhub_name")
+consumer_group = cfg.get("ingestion", {}).get("consumer_group", "$Default")
+
 print(f"[runner config] tenant_id={tenant_id} site_id={site_id} event_type={event_type} run_minutes={run_minutes}")
+print(f"[runner config] storage_base_path={storage_base_path}")
+print(f"[runner config] eventhub_name={eventhub_name} consumer_group={consumer_group}")
 print(f"[runner config] allowed_event_types={allowed_event_types}")
+# =====================================
+
 
 # COMMAND ----------
 
-# Delegate to your existing WORKSPACE Bronze logic notebook
-# Keep this as the ONLY thing in this cell for Databricks %run stability
 %run "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
