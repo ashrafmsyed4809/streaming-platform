@@ -14,6 +14,7 @@ _w("site_id", "site_demo")
 _w("event_type", "temp_humidity.v1")
 _w("config_file", "configs/tenants/tenant_demo/dev.yml")
 _w("run_minutes", "5")
+_w("event_type_override", "")
 
 # Read widgets
 env = dbutils.widgets.get("env").strip() or "dev"
@@ -22,6 +23,7 @@ site_id = dbutils.widgets.get("site_id").strip() or "site_demo"
 event_type = dbutils.widgets.get("event_type").strip() or "temp_humidity.v1"
 config_file = dbutils.widgets.get("config_file").strip() or "configs/tenants/tenant_demo/dev.yml"
 run_minutes = int(dbutils.widgets.get("run_minutes") or "5")
+event_type_override = dbutils.widgets.get("event_type_override").strip()
 
 print(f"[runner params] env={env} tenant_id={tenant_id} site_id={site_id} event_type={event_type} run_minutes={run_minutes}")
 print(f"[runner params] config_file={config_file}")
@@ -62,7 +64,10 @@ if not allowed_event_types:
     raise Exception("Config error: events.allowed_event_types is empty")
 
 # Project 01: one event_type per run (use first one)
-event_type = allowed_event_types[0]
+#event_type = allowed_event_types[0]
+event_type = event_type_override if event_type_override else allowed_event_types[0]
+if event_type not in allowed_event_types:
+    raise Exception(f"Invalid event_type '{event_type}'. Allowed: {allowed_event_types}")
 
 # runtime override (optional)
 run_minutes = int(cfg.get("runtime", {}).get("run_minutes", run_minutes))

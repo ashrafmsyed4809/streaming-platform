@@ -20,6 +20,8 @@ resources:
           default: ${var.config_file}
         - name: run_minutes
           default: ${var.run_minutes}
+        - name: event_type_override
+          default: ""
 
 
 
@@ -39,9 +41,6 @@ resources:
               spark.databricks.delta.optimizeWrite.enabled: "true"
               spark.databricks.delta.autoCompact.enabled: "true"
 
-            libraries:
-              - maven:
-                  coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
 
       tasks:
         - task_key: bronze
@@ -59,9 +58,7 @@ resources:
               event_type: "{{job.parameters.event_type}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
-
-
-
+              event_type_override: "{{job.parameters.event_type_override}}"
 
 
         - task_key: silver
@@ -81,7 +78,7 @@ resources:
               event_type: "{{job.parameters.event_type}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
-
+              event_type_override: "{{job.parameters.event_type_override}}"
 
 
 
@@ -102,5 +99,5 @@ resources:
               event_type: "{{job.parameters.event_type}}"
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
-
+              event_type_override: "{{job.parameters.event_type_override}}"
 
