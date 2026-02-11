@@ -3,6 +3,9 @@ bundle:
 
 include:
   - "jobs/*.yml"
+  - "../../configs/**/*.yml"
+  - "../../schemas/**"
+  - "../../rules/**"
 
 # You can override these per target using variables below
 variables:

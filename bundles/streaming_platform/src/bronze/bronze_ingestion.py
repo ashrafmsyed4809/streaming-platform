@@ -30,9 +30,14 @@ print(f"[runner params] config_file={config_file}")
 
 # ====== Load tenant config (80/20) ======
 import yaml
+import os
 
-with open(config_file, "r") as f:
-    cfg = yaml.safe_load(f) or {}
+#with open(config_file, "r") as f:
+#    cfg = yaml.safe_load(f) or {}
+
+cfg_path = os.path.join(os.getcwd(), config_file)
+with open(cfg_path, "r") as f:
+    cfg = yaml.safe_load(f)
 
 # Override from config (single source of truth)
 tenant_id = cfg["tenant"]["tenant_id"]
