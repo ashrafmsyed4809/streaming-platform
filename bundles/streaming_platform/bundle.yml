@@ -6,9 +6,10 @@ include:
 
 sync:
   include:
-    - "../../configs/**/*.yml"
+    - "../../configs/**"
     - "../../schemas/**"
     - "../../rules/**"
+
 
 # You can override these per target using variables below
 variables:
