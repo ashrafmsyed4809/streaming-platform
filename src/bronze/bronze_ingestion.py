@@ -19,5 +19,4 @@ print("[runner] Starting BRONZE. Delegating to existing Workspace notebook...")
 
 # COMMAND ----------
 
-# NOTE: This should point to your existing WORKSPACE bronze notebook (the one that already works)
 %run "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
