@@ -26,7 +26,7 @@ targets:
       # Replace with your DEV Databricks workspace URL
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
-      run_minutes: 3
+      run_minutes: 1
       tenant_id: "tenant_demo"
       config_file: "configs/tenants/tenant_demo/dev.yml"
 
