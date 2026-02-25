@@ -3,10 +3,8 @@ resources:
     streaming_platform_job:
       name: "streaming_platform_${bundle.target}"
 
-      # Optional: prevent overlapping runs in dev/stage
       max_concurrent_runs: 1
 
-      # Job parameters (visible in Databricks UI + overridable per run)
       parameters:
         - name: env
           default: ${bundle.target}
@@ -23,10 +21,6 @@ resources:
         - name: event_type_override
           default: ""
 
-
-
-
-
       job_clusters:
         - job_cluster_key: platform_cluster
           new_cluster:
@@ -37,10 +31,13 @@ resources:
             data_security_mode: "SINGLE_USER"
             single_user_name: "info@justaboutdata.com"
 
+            # <-- Add secret as environment var on the cluster (resolved at deploy/run time)
+            spark_env_vars:
+              EVENTHUB_NAMESPACE_CONN_STR: "{{secrets/streaming-kv/eventhub-namespace-conn-str}}"
+
             spark_conf:
               spark.databricks.delta.optimizeWrite.enabled: "true"
               spark.databricks.delta.autoCompact.enabled: "true"
-
 
       tasks:
         - task_key: bronze
@@ -49,8 +46,7 @@ resources:
             - maven:
                 coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            #notebook_path: "/Users/info@justaboutdata.com/streaming-platform/bronze/bronze_ingestion"
-            notebook_path: "${workspace.file_path}/src/bronze/bronze_ingestion"
+            notebook_path: "${workspace.file_path}/bundles/streaming_platform/src/bronze/bronze_runner"
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
@@ -59,7 +55,6 @@ resources:
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
               event_type_override: "{{job.parameters.event_type_override}}"
-
 
         - task_key: silver
           depends_on:
@@ -69,8 +64,7 @@ resources:
             - maven:
                 coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            #notebook_path: "/Users/info@justaboutdata.com/streaming-platform/silver/silver_processing"
-            notebook_path: "${workspace.file_path}/src/silver/silver_processing"
+            notebook_path: "${workspace.file_path}/bundles/streaming_platform/src/silver/silver_runner"
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
@@ -79,8 +73,6 @@ resources:
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
               event_type_override: "{{job.parameters.event_type_override}}"
-
-
 
         - task_key: gold
           depends_on:
@@ -90,8 +82,7 @@ resources:
             - maven:
                 coordinates: "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22"
           notebook_task:
-            #notebook_path: "/Users/info@justaboutdata.com/streaming-platform/gold/gold_serving"
-            notebook_path: "${workspace.file_path}/src/gold/gold_serving"
+            notebook_path: "${workspace.file_path}/bundles/streaming_platform/src/gold/gold_serving"
             base_parameters:
               env: "{{job.parameters.env}}"
               tenant_id: "{{job.parameters.tenant_id}}"
@@ -100,4 +91,3 @@ resources:
               config_file: "{{job.parameters.config_file}}"
               run_minutes: "{{job.parameters.run_minutes}}"
               event_type_override: "{{job.parameters.event_type_override}}"
-
