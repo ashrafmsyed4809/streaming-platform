@@ -1,10 +1,33 @@
 bundle:
   name: streaming_platform
 
+# Bundle resources (jobs/pipelines). Keep this.
 include:
   - "bundles/streaming_platform/jobs/*.yml"
 
-# You can override these per target using variables below
+# ✅ This is the missing piece: what files get uploaded to the workspace bundle root
+sync:
+  include:
+    # Code / notebooks
+    - "bundles/streaming_platform/src/**"
+
+    # Tenant configs (your runners load these)
+    - "configs/**"
+
+    # If you have a projects folder your code references
+    - "projects/**"
+
+    # Optional: any shared libs/helpers you keep elsewhere
+    # - "libs/**"
+  exclude:
+    - "**/.git/**"
+    - "**/.github/**"
+    - "**/__pycache__/**"
+    - "**/*.pyc"
+    - "**/*.pkl"
+    - "**/*.env"
+    - "**/secrets/**"
+
 variables:
   run_minutes:
     description: "POC run duration in minutes. 0 means continuous (production)."
@@ -23,7 +46,6 @@ targets:
     default: true
     mode: development
     workspace:
-      # Replace with your DEV Databricks workspace URL
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       run_minutes: 1
@@ -33,7 +55,6 @@ targets:
   stage:
     mode: development
     workspace:
-      # Replace with your STAGE Databricks workspace URL
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       run_minutes: 10
@@ -43,7 +64,6 @@ targets:
   prod:
     mode: production
     workspace:
-      # Replace with your PROD Databricks workspace URL
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       run_minutes: 0
