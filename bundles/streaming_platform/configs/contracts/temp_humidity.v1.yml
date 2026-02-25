@@ -1,0 +1,16 @@
+fields:
+  - name: device_id
+    type: string
+    nullable: false
+
+  - name: timestamp_utc
+    type: string
+    nullable: false
+
+  - name: temperature_f
+    type: double
+    nullable: true
+
+  - name: humidity_pct
+    type: double
+    nullable: true

@@ -1,5 +1,5 @@
 tenant:
-  tenant_id: "tenant_demo"
+  tenant_id: "tenant_02"
   site_id_default: "site_demo"
 
 ingestion:

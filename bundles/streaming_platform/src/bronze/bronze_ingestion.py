@@ -1,5 +1,6 @@
 # Databricks notebook source
 # COMMAND ----------
+import yaml
 
 # ====== Job widgets (minimal) ======
 def _w(name: str, default: str):
@@ -52,8 +53,31 @@ print("[runner] cwd =", os.getcwd())
 print("[runner] bundle_root =", bundle_root)
 print("[runner] cfg_path =", cfg_path)
 
-with open(cfg_path, "r") as f:
-    cfg = yaml.safe_load(f) or {}
+#with open(cfg_path, "r") as f:
+#    cfg = yaml.safe_load(f) or {}
+
+
+CONFIG_FILE_PARAM = dbutils.widgets.get("config_file")
+
+# Get current notebook workspace path
+ctx = dbutils.notebook.entry_point.getDbutils().notebook().getContext()
+nb_ws_path = ctx.notebookPath().get()
+
+# Extract bundle root
+bundle_ws_root = nb_ws_path.split("/src/")[0]
+
+# Convert to driver local path
+bundle_local_root = "/Workspace" + bundle_ws_root
+
+# Build config file path
+config_local_path = f"{bundle_local_root}/{CONFIG_FILE_PARAM}"
+
+print("Loading config from:", config_local_path)
+
+with open(config_local_path, "r") as f:
+    cfg = yaml.safe_load(f)
+
+print("Loaded tenant:", cfg["tenant"]["tenant_id"])
 
 # Override from config (single source of truth)
 tenant_id = cfg["tenant"]["tenant_id"]

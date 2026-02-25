@@ -74,4 +74,4 @@ print(f"[runner config] allowed_event_types={allowed_event_types}")
 
 # COMMAND ----------
 
-%run "/Users/info@justaboutdata.com/streaming-platform/gold/gold_serving"
+%run "/Users/info@justaboutdata.com/streaming-platform/gold/gold_collector_batch"
