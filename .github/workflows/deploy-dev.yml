@@ -1,9 +1,14 @@
 name: CD - Deploy Dev Bundle
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      run_job:
+        description: "Run streaming_platform_job after deploy?"
+        required: true
+        default: "false"
+        type: choice
+        options: ["false", "true"]
 
 jobs:
   deploy-dev:
@@ -19,19 +24,17 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          databricks bundle validate -t dev
+        run: databricks bundle validate -t dev
 
       - name: Deploy bundle (dev)
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          databricks bundle deploy -t dev
+        run: databricks bundle deploy -t dev
 
       - name: Smoke run job (dev)
+        if: ${{ github.event.inputs.run_job == 'true' }}
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          databricks bundle run -t dev streaming_platform_job
+        run: databricks bundle run -t dev streaming_platform_job
