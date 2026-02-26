@@ -22,8 +22,19 @@ tenant_id = dbutils.widgets.get("tenant_id").strip() or "tenant_demo"
 site_id = dbutils.widgets.get("site_id").strip() or "site_demo"
 event_type = dbutils.widgets.get("event_type").strip() or "temp_humidity.v1"
 config_file = dbutils.widgets.get("config_file").strip() or "configs/tenants/tenant_demo/dev.yml"
-run_minutes = int(dbutils.widgets.get("run_minutes") or "5")
 event_type_override = dbutils.widgets.get("event_type_override").strip()
+#run_minutes = int(dbutils.widgets.get("run_minutes") or "5")
+
+def _parse_run_minutes(raw, default: int = 5) -> int:
+    s = "" if raw is None else str(raw).strip()
+    if s == "":
+        return default
+    try:
+        return max(1, int(float(s)))
+    except Exception:
+        return default
+
+run_minutes = _parse_run_minutes(dbutils.widgets.get("run_minutes"), default=5)
 
 print(f"[runner params] env={env} tenant_id={tenant_id} site_id={site_id} event_type={event_type} run_minutes={run_minutes}")
 print(f"[runner params] config_file={config_file}")

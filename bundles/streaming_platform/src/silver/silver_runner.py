@@ -28,7 +28,18 @@ config_file = (dbutils.widgets.get("config_file") or "").strip()
 event_type_filter = (dbutils.widgets.get("event_type_filter") or "").strip()
 
 # Temporary default until YAML loads (prevents NameError)
-run_minutes = float((dbutils.widgets.get("run_minutes") or "5").strip() or "5")
+#run_minutes = float((dbutils.widgets.get("run_minutes") or "5").strip() or "5")
+
+def _parse_run_minutes(raw, default: int = 5) -> int:
+    s = "" if raw is None else str(raw).strip()
+    if s == "":
+        return default
+    try:
+        return max(1, int(float(s)))
+    except Exception:
+        return default
+
+run_minutes = _parse_run_minutes(dbutils.widgets.get("run_minutes"), default=5)
 
 print(f"[runner params] env={env} tenant_id(widget)={tenant_id_widget} site_id(widget)={site_id_widget} run_minutes(widget/default)={run_minutes}")
 print(f"[runner params] config_file={config_file} event_type_filter={event_type_filter}")

@@ -10,6 +10,11 @@ on:
         type: choice
         options: ["false", "true"]
 
+      run_minutes:
+        description: "How long to run Bronze/Silver/Gold (minutes)"
+        required: false
+        default: "5"
+
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
@@ -37,4 +42,7 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: databricks bundle run -t dev streaming_platform_job
+        run: |
+          databricks bundle run -t dev \
+            --params run_minutes=${{ inputs.run_minutes }} \
+            streaming_platform_job

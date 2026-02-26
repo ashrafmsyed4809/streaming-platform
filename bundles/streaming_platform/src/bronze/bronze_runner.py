@@ -32,7 +32,17 @@ env = (dbutils.widgets.get("env") or "dev").strip()
 tenant_id_widget = (dbutils.widgets.get("tenant_id") or "").strip()
 site_id_widget = (dbutils.widgets.get("site_id") or "").strip()
 config_file = (dbutils.widgets.get("config_file") or "").strip()
-run_minutes = int(dbutils.widgets.get("run_minutes") or "5")
+#run_minutes = int(dbutils.widgets.get("run_minutes") or "5")
+def _parse_run_minutes(raw, default: int = 5) -> int:
+    s = "" if raw is None else str(raw).strip()
+    if s == "":
+        return default
+    try:
+        return max(1, int(float(s)))
+    except Exception:
+        return default
+
+run_minutes = _parse_run_minutes(dbutils.widgets.get("run_minutes"), default=5)
 
 source_id = (dbutils.widgets.get("source_id") or "default_source").strip()
 

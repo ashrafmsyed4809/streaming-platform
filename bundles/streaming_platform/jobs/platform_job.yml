@@ -17,7 +17,7 @@ resources:
         - name: config_file
           default: ${var.config_file}
         - name: run_minutes
-          default: ${var.run_minutes}
+          default: "5"
         - name: event_type_override
           default: ""
 

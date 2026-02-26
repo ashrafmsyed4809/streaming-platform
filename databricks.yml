@@ -1,24 +1,16 @@
 bundle:
   name: streaming_platform
 
-# Bundle resources (jobs/pipelines). Keep this.
+# Bundle resources (jobs/pipelines)
 include:
   - "bundles/streaming_platform/jobs/*.yml"
 
-# ✅ This is the missing piece: what files get uploaded to the workspace bundle root
+# Files uploaded to workspace
 sync:
   include:
-    # Code / notebooks
     - "bundles/streaming_platform/src/**"
-
-    # Tenant configs (your runners load these)
     - "configs/**"
-
-    # If you have a projects folder your code references
     - "projects/**"
-
-    # Optional: any shared libs/helpers you keep elsewhere
-    # - "libs/**"
   exclude:
     - "**/.git/**"
     - "**/.github/**"
@@ -29,10 +21,6 @@ sync:
     - "**/secrets/**"
 
 variables:
-  run_minutes:
-    description: "POC run duration in minutes. 0 means continuous (production)."
-    default: 3
-
   tenant_id:
     description: "Tenant (client) identifier"
     default: "tenant_demo"
@@ -48,7 +36,6 @@ targets:
     workspace:
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
-      run_minutes: 1
       tenant_id: "tenant_demo"
       config_file: "configs/tenants/tenant_demo/dev.yml"
 
@@ -57,7 +44,6 @@ targets:
     workspace:
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
-      run_minutes: 10
       tenant_id: "tenant_demo"
       config_file: "configs/tenants/tenant_demo/stage.yml"
 
@@ -66,6 +52,5 @@ targets:
     workspace:
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
-      run_minutes: 0
       tenant_id: "tenant_demo"
       config_file: "configs/tenants/tenant_demo/prod.yml"
