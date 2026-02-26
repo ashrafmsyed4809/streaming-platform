@@ -69,9 +69,10 @@ events_cfg  = cfg.get("events", {}) or {}
 runtime_cfg = cfg.get("runtime", {}) or {}
 
 # Now that YAML is loaded, resolve run_minutes correctly (YAML default, widget override)
+# Resolve run_minutes (YAML default, widget override; widget wins)
 yaml_minutes = runtime_cfg.get("run_minutes", 5)
-widget_minutes = (dbutils.widgets.get("run_minutes") or "").strip()
-run_minutes = float(widget_minutes) if widget_minutes else float(yaml_minutes)
+run_minutes = _parse_run_minutes(dbutils.widgets.get("run_minutes"), default=_parse_run_minutes(yaml_minutes, default=5))
+print(f"[runner params] final_run_minutes={run_minutes}")
 
 tenant_id = tenant_cfg.get("tenant_id") or tenant_id_widget
 site_id   = tenant_cfg.get("site_id_default") or site_id_widget

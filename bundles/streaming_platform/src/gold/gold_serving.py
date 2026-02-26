@@ -77,7 +77,11 @@ event_type = event_type_override if event_type_override else allowed_event_types
 if event_type not in allowed_event_types:
     raise Exception(f"Invalid event_type '{event_type}'. Allowed: {allowed_event_types}")
 # runtime override (optional)
-run_minutes = int(cfg.get("runtime", {}).get("run_minutes", run_minutes))
+#run_minutes = int(cfg.get("runtime", {}).get("run_minutes", run_minutes))
+# Resolve run_minutes (YAML default, widget override; widget wins)
+yaml_minutes = cfg.get("runtime", {}).get("run_minutes", 5)
+run_minutes = _parse_run_minutes(dbutils.widgets.get("run_minutes"), default=_parse_run_minutes(yaml_minutes, default=5))
+print(f"[runner params] final_run_minutes={run_minutes}")
 
 print(f"[runner config] tenant_id={tenant_id} site_id={site_id} event_type={event_type} run_minutes={run_minutes}")
 print(f"[runner config] allowed_event_types={allowed_event_types}")

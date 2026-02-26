@@ -110,7 +110,11 @@ if landing_path_override:
 source_id = (ing_cfg.get("source_id") or source_id).strip()
 
 # Optional: allow config runtime override
-run_minutes = int(runtime_cfg.get("run_minutes", run_minutes))
+#run_minutes = int(runtime_cfg.get("run_minutes", run_minutes))
+# Resolve run_minutes (YAML default, widget override; widget wins)
+yaml_minutes = runtime_cfg.get("run_minutes", 5)
+run_minutes = _parse_run_minutes(dbutils.widgets.get("run_minutes"), default=_parse_run_minutes(yaml_minutes, default=5))
+print(f"[runner params] final_run_minutes={run_minutes}")
 
 print(f"[runner config] tenant_id={tenant_id} site_id={site_id}")
 print(f"[runner config] source={source} landing_path={landing_path}")
