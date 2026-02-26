@@ -1,10 +1,3 @@
----
-
-# ✅ Project 01 – README.md
-
-*(Clean, Senior-Level Version)*
-
----
 
 # Project 01 — Multi-Tenant Streaming Platform on Azure
 
