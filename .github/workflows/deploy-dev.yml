@@ -5,7 +5,7 @@ on:
     inputs:
       run_job:
         description: "Run streaming_platform_job after deploy?"
-        required: true
+        required: false
         default: "false"
         type: choice
         options: ["false", "true"]
@@ -33,7 +33,7 @@ jobs:
         run: databricks bundle deploy -t dev
 
       - name: Smoke run job (dev)
-        if: ${{ github.event.inputs.run_job == 'true' }}
+        if: ${{ inputs.run_job == 'true' }}
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
