@@ -20,33 +20,30 @@ events:
     pi-001: "temp_humidity.v1"
     pi-002: "temp_humidity.v1"
 
-runtime:
-  run_minutes: 5
-
 # =========================
 # Gold (Option C) - Batch
 # =========================
 gold:
   curated:
     enabled: true
-    output_subpath: "gold_curated"   # writes to: {base_path}/env={env}/gold_curated
+    output_subpath: "gold_curated"
 
   metrics:
     enabled: true
-    output_subpath: "gold_metrics"   # writes to: {base_path}/env={env}/gold_metrics
+    output_subpath: "gold_metrics"
 
   # Batch execution mode
   # daily: runs for run_date (or today UTC) with optional lookback_days
   # range: runs between start_date and end_date (inclusive)
-  mode: "daily"                      # daily | range
-  run_date: ""                       # optional YYYY-MM-DD (blank = today UTC)
-  lookback_days: 1                   # process last N days (1 = only run_date)
+  mode: "daily"           # daily | range
+  run_date: ""            # optional YYYY-MM-DD (blank = today UTC)
+  lookback_days: 1        # process last N days (1 = only run_date)
 
   # Per event_type options (20% configurable)
   event_types:
     temp_humidity.v1:
       metrics:
-        grain: "hour"                # hour | day
+        grain: "hour"
     temp_humidity.v2:
       metrics:
-        grain: "hour"                # hour | day
+        grain: "hour"

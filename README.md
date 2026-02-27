@@ -1,247 +1,309 @@
+
 # 80/20 Reusable Streaming Platform (Azure + Databricks)
 
-A reusable, production-style streaming data platform built on Azure and Databricks.
+A reusable, production-style, multi-tenant streaming data platform built on Azure and Databricks.
 
-This repository represents a **config-driven, multi-tenant streaming engine** where:
+This repository demonstrates a **config-driven streaming engine** where:
 
-* **80% is reusable platform infrastructure**
-* **20% is configuration per client and per event type**
+- **80% is reusable platform infrastructure**
+- **20% is configuration per client and per event type**
 
-The goal is to enable fast onboarding of new clients and new streaming event types without modifying core pipeline code.
+The objective is to onboard new clients and new streaming event types without modifying core pipeline code.
 
 ---
 
 ## 🎯 Purpose
 
-This platform is designed for:
+This platform demonstrates:
 
-* Senior-level data engineering portfolio demonstration
-* Multi-tenant streaming architecture pattern
-* Real-world DevOps + CI/CD implementation
-* A foundation for a streaming data cleaning business
+- Senior-level streaming architecture
+- Multi-tenant data isolation
+- Structured Streaming best practices
+- Deterministic runtime control
+- DevOps & CI/CD using Databricks Asset Bundles
+- Production-style observability & audit tracking
+
+It serves as both:
+- A portfolio demonstration
+- A foundation for a scalable streaming data platform
 
 ---
 
 ## 🏗 Core Architecture
 
-Event Hub → Bronze → Silver → Gold (Delta Lake)
+```
 
-All storage follows Medallion architecture in ADLS Gen2.
-
-Partition strategy:
+Azure Event Hub
+↓
+Bronze (Envelope + DLQ)
+↓
+Silver (Validation + Standardization)
+↓
+Gold (Curated + Metrics)
 
 ```
+
+Storage follows **Medallion Architecture** in ADLS Gen2 using Delta Lake.
+
+### Partition Strategy
+
+```
+
 tenant_id / event_type / ingest_date
+
 ```
 
 This enables:
 
-* Tenant isolation
-* Efficient querying
-* Backfill and replay support
-* Clean cost control
+- Tenant isolation
+- Efficient querying
+- Replay & backfill
+- Cost control
+- Clean operational boundaries
 
 ---
 
 ## 🧱 Technology Stack
 
 | Layer               | Technology                              |
-| ------------------- | --------------------------------------- |
-| Streaming Ingestion | Azure Event Hub                         |
-| Processing          | Azure Databricks (Structured Streaming) |
-| Storage             | Azure Data Lake Storage Gen2            |
-| Table Format        | Delta Lake                              |
-| Orchestration       | Databricks Multi-Task Jobs              |
-| CI/CD               | Databricks Asset Bundles                |
-| Identity            | Managed Identity                        |
+|---------------------|-----------------------------------------|
+| Streaming Ingestion| Azure Event Hub                         |
+| Processing         | Azure Databricks (Structured Streaming) |
+| Storage            | Azure Data Lake Storage Gen2            |
+| Table Format       | Delta Lake                              |
+| Orchestration      | Databricks Multi-Task Jobs              |
+| CI/CD              | Databricks Asset Bundles + GitHub Actions |
+| Identity           | Managed Identity                        |
 
 ---
 
 ## 🧩 80% Reusable Platform Engine
 
 ```
-src/
-  common/
-  bronze/
-  silver/
-  gold/
+
+bundles/streaming_platform/src/
+bronze/
+silver/
+gold/
+common/
+
 ```
 
-### src/common
+### Bronze
+- Event Hub ingestion
+- Universal envelope creation (v2)
+- DLQ isolation
+- Audit batch tracking
 
-* Configuration loader
-* Logging utilities
-* Envelope validation
-* Audit tracking
+### Silver
+- Contract validation
+- Data quality enforcement
+- Standardization & enrichment
 
-### src/bronze
+### Gold
+- Curated datasets
+- Metrics aggregation
+- Analytics-ready serving tables
 
-* Event Hub ingestion
-* Envelope parsing
-* DLQ routing
-* Bronze Delta writes
-
-### src/silver
-
-* Schema validation
-* Data quality enforcement
-* Standardization & enrichment
-
-### src/gold
-
-* Aggregations
-* Serving tables
-* Analytics-ready datasets
-
-This engine does not change per client.
+This layer does **not change per client**.
 
 ---
 
 ## ⚙ 20% Configurable Surface
 
 ```
+
 configs/
-  global/
-  tenants/
+tenants/
 
 schemas/
-  event_types/
+event_types/
 
 rules/
-  event_types/
+event_types/
+
 ```
 
-### configs/tenants
-
-Per-tenant environment configs (dev / stage / prod)
-
-### schemas/event_types
-
-Payload schema definitions per event type
-
-### rules/event_types
-
-Data quality validation rules per event type
-
-New clients and new event types are onboarded via configuration only.
-
----
-
-## 📦 Universal Event Envelope
-
-All streaming events follow a standardized contract:
-
-* tenant_id
-* site_id
-* device_id
-* device_type
-* event_type
-* event_id
-* event_time_utc
-* ingest_time_utc
-* schema_version
-* source_system
-* payload
-* attributes
-
-This ensures:
-
-* Multi-client support
-* Schema evolution
-* Platform reuse
-* Clean separation of payload vs metadata
-
----
-
-## 🚀 Onboarding Model
+New clients and event types are onboarded **via configuration only**.
 
 ### Add New Event Type
-
-1. Add schema file
-2. Add rule file
+1. Add schema definition
+2. Add validation rules
 3. Update tenant config
 
-No core pipeline rewrite required.
-
 ### Add New Client
+1. Create tenant config
+2. Deploy bundle
+3. Start ingestion
 
-1. Create tenant folder
-2. Add environment configs
-3. Deploy bundle
+No pipeline rewrite required.
 
-Platform remains unchanged.
+---
+
+## 📦 Universal Event Envelope (v2)
+
+All events are standardized before leaving Bronze:
+
+- tenant_id  
+- site_id  
+- device_id  
+- event_type  
+- event_id  
+- event_time_utc  
+- ingest_time_utc  
+- schema_version  
+- source_system  
+- payload  
+- attributes  
+
+This enables:
+
+- Multi-tenant scalability
+- Schema evolution
+- Clean metadata separation
+- Safe replay & reprocessing
+
+---
+
+## ⏱ Deterministic Runtime Control
+
+Runtime duration is controlled by a **single job parameter**:
+
+```
+
+run_minutes
+
+```
+
+- Passed from GitHub workflow input
+- Applied consistently across Bronze → Silver → Gold
+- Tenant YAML does NOT control runtime duration
+
+### Example Runs
+
+| Scenario        | run_minutes |
+|---------------|------------|
+| Smoke test     | 1          |
+| Demo run       | 5          |
+| Extended test  | 30         |
+
+All layers honor the same value.
 
 ---
 
 ## 📊 Observability
 
-Audit metrics track:
-
-* input_rows
-* output_rows
-* dlq_rows
-* processing latency
-* job status
-
-Audit table:
+Batch-level audit metrics are stored in:
 
 ```
+
 audit/audit_pipeline_batches
+
 ```
+
+Tracked metrics include:
+
+- input_rows
+- output_rows
+- dlq_rows
+- batch status
+- processing timestamps
+
+This enables production-style monitoring and validation.
 
 ---
 
 ## 🔄 CI/CD
 
-Implemented:
+- Databricks Asset Bundles
+- Multi-environment targets (dev/stage/prod)
+- GitHub Actions manual deployment
+- Parameterized job execution
 
-* Databricks Asset Bundles
-* Multi-environment targets
-* Parameterized jobs
-
-Planned:
-
-* GitHub Actions automation
 
 ---
 
-## 📂 Documentation
+▶️ How to Deploy & Run
+---
+1️⃣ Validate Bundle
+---
+databricks bundle validate -t dev
 
-Located in:
+2️⃣ Deploy to Databricks Workspace
+---
 
-```
-docs/
-```
+databricks bundle deploy -t dev
 
-Includes:
+This deploys:
 
-* Runbook
-* Client onboarding guide
-* Event onboarding guide
-* Platform context documentation
+Multi-task job (Bronze → Silver → Gold)
+
+Notebooks
+
+Configuration files
+
+Environment-specific overrides
+
+3️⃣ Run the Job
+---
+databricks bundle run -t dev streaming_platform_job
+
+Or use GitHub Actions:
+
+Go to Actions
+
+Select CD - Deploy Dev Bundle
+
+Click Run workflow
+
+Set run_job = true to execute after deploy
+
+Runtime Modes
+
+Controlled via YAML configuration:
+
+runtime:
+  run_minutes: 5   # POC mode (auto-stop after N minutes)
+
+Production mode:
+
+runtime:
+  run_minutes: 0   # Continuous execution
+Delta Storage Confirmation
+
+All layers use Delta Lake:
+
+Bronze → Delta
+
+Silver → Delta
+
+Gold → Delta (Curated + Metrics)
+
+Audit → Delta
+
+DLQ → Delta
 
 ---
 
-## 📁 Projects in This Repository
-
-* Project 01 – Streaming Platform Implementation (Azure + Databricks)
 ## 📁 Portfolio Projects
 
 - [Project 01 — Multi-Tenant Streaming Platform on Azure](projects/project-01/README.md)
-Each project has its own README with deployment details and proof of execution.
+
+Each project contains:
+- Architecture details
+- Execution proof
+- Screenshots
+- Deployment steps
 
 ---
 
 ## 👨‍💻 Author
 
-Ashraf Syed
-
-Senior Data Engineering Portfolio
-
+**Ashraf Syed**  
+Senior Data Engineering Portfolio  
 Streaming Data Platform Initiative
 
----
-
+```
 
 
 
