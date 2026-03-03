@@ -8,16 +8,23 @@ resources:
       parameters:
         - name: env
           default: ${bundle.target}
+
         - name: tenant_id
           default: ${var.tenant_id}
+
         - name: site_id
-          default: "site_demo"
+          default: ${var.site_id}
+
         - name: event_type
           default: "temp_humidity.v1"
+
         - name: config_file
           default: ${var.config_file}
+
+        # ✅ UPDATED — now controlled by bundle variable
         - name: run_minutes
-          default: "5"
+          default: ${var.run_minutes}
+
         - name: event_type_override
           default: ""
 
@@ -31,7 +38,6 @@ resources:
             data_security_mode: "SINGLE_USER"
             single_user_name: "info@justaboutdata.com"
 
-            # <-- Add secret as environment var on the cluster (resolved at deploy/run time)
             spark_env_vars:
               EVENTHUB_NAMESPACE_CONN_STR: "{{secrets/streaming-kv/eventhub-namespace-conn-str}}"
 

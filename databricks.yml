@@ -25,9 +25,18 @@ variables:
     description: "Tenant (client) identifier"
     default: "tenant_demo"
 
+  site_id:
+    description: "Default site id for the tenant"
+    default: "site_demo"
+
   config_file:
     description: "Path to tenant config file within the repo"
     default: "configs/tenants/tenant_demo/dev.yml"
+
+  # ✅ NEW — Run duration variable (1 minute default)
+  run_minutes:
+    description: "How long to run ingestion loop (dev only)"
+    default: "1"
 
 targets:
   dev:
@@ -37,7 +46,19 @@ targets:
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       tenant_id: "tenant_demo"
+      site_id: "site_demo"
       config_file: "configs/tenants/tenant_demo/dev.yml"
+      run_minutes: "1"
+
+  dev_tenant_02:
+    mode: development
+    workspace:
+      host: "https://adb-3060566723072813.13.azuredatabricks.net"
+    variables:
+      tenant_id: "tenant_02"
+      site_id: "site_02"
+      config_file: "configs/tenants/tenant_02/dev.yml"
+      run_minutes: "1"
 
   stage:
     mode: development
@@ -45,7 +66,9 @@ targets:
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       tenant_id: "tenant_demo"
+      site_id: "site_demo"
       config_file: "configs/tenants/tenant_demo/stage.yml"
+      run_minutes: "1"
 
   prod:
     mode: production
@@ -53,4 +76,6 @@ targets:
       host: "https://adb-3060566723072813.13.azuredatabricks.net"
     variables:
       tenant_id: "tenant_demo"
+      site_id: "site_demo"
       config_file: "configs/tenants/tenant_demo/prod.yml"
+      run_minutes: "1"
