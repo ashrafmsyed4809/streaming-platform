@@ -1,16 +1,38 @@
+event_type: temp_humidity.v2
+
 fields:
-  - name: device_id
+
+  device_id:
     type: string
-    nullable: false
+    required: true
 
-  - name: timestamp_utc
+  event_time_utc:
     type: string
-    nullable: false
+    required: true
+    description: "UTC timestamp emitted by device"
 
-  - name: temperature_f
-    type: double
-    nullable: true
+  temperature_f:
+    type: float
+    required: true
 
-  - name: humidity_pct
-    type: double
-    nullable: true
+  humidity_pct:
+    type: float
+    required: true
+
+  sensor:
+    type: string
+    required: true
+
+  serial_number:
+    type: string
+    required: true
+
+  battery_pct:
+    type: float
+    required: false
+    min: 0
+    max: 100
+
+  firmware_version:
+    type: string
+    required: false

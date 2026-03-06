@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "temp_humidity.v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "device_id",
+    "event_time_utc",
+    "temperature_f",
+    "humidity_pct",
+    "sensor",
+    "serial_number"
+  ],
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_time_utc": {
+      "type": "string",
+      "minLength": 1,
+      "description": "UTC timestamp string emitted by device. Expected format: YYYY-MM-DD HH:MM:SS"
+    },
+    "temperature_f": {
+      "type": "number"
+    },
+    "humidity_pct": {
+      "type": "number"
+    },
+    "sensor": {
+      "type": "string",
+      "minLength": 1
+    },
+    "serial_number": {
+      "type": "string",
+      "minLength": 1
+    },
+    "battery_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Optional battery percentage (0-100). Null/missing allowed."
+    },
+    "firmware_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional firmware version string."
+    }
+  }
+}

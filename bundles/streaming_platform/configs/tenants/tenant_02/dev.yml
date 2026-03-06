@@ -18,7 +18,7 @@ events:
 
   device_registry:
     pi-003: "temp_humidity.v1"
-    pi-004: "temp_humidity.v1"
+    pi-004: "temp_humidity.v2"
 
 # =========================
 # Gold (Option C) - Batch
