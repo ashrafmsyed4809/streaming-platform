@@ -22,3 +22,11 @@ fields:
   - name: firmware_version
     type: string
     nullable: true
+
+  - name: sensor
+    type: string
+    nullable: true
+
+  - name: serial_number
+    type: string
+    nullable: true
