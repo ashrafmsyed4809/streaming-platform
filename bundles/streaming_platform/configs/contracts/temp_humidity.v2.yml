@@ -4,7 +4,7 @@ fields:
     nullable: false
 
   - name: event_time_utc
-    type: string
+    type: timestamp
     nullable: false
 
   - name: temperature_f
