@@ -34,7 +34,6 @@ It serves as both:
 # 🏗 Platform Architecture
 
 
-```
 Azure Event Hub
 ↓
 Bronze (Envelope + DLQ)
@@ -43,7 +42,21 @@ Silver (Validation + Standardization)
 ↓
 Gold (Curated + Metrics)
 
-```
+## Platform Capabilities
+
+The streaming platform demonstrates production-style data engineering patterns:
+
+| Capability | Description |
+|-----------|-------------|
+| **Multi-Tenant Architecture** | Supports multiple clients using configuration-driven onboarding. |
+| **Medallion Architecture** | Bronze → Silver → Gold layers implemented using Delta Lake. |
+| **Contract-Driven Processing** | Event contracts define schemas and validation rules. |
+| **Schema Evolution** | Supports multiple event schema versions simultaneously. |
+| **Deterministic Streaming Runtime** | Controlled micro-batch execution using configurable runtime windows. |
+| **Replay / Backfill** | Recompute historical event windows safely using idempotent delete + rebuild pipelines. |
+| **DLQ Handling** | Invalid records routed to dedicated Dead Letter Queue tables. |
+| **CI/CD Deployment** | Platform deployed using Databricks Asset Bundles and GitHub workflows. |
+
 
 Storage follows **Medallion Architecture** in **ADLS Gen2 using Delta Lake**.
 
@@ -77,15 +90,13 @@ Storage follows **Medallion Architecture** in **ADLS Gen2 using Delta Lake**.
 
 # 🧩 80% Reusable Platform Engine
 
-```
+
 
 bundles/streaming_platform/src/
 ├ bronze/
 ├ silver/
 ├ gold/
 └ common/
-
-```
 
 ### Bronze
 - Event Hub ingestion
@@ -109,7 +120,7 @@ This layer **does not change per client**.
 
 # ⚙ 20% Configurable Surface
 
-```
+
 
 configs/
 ├ tenants/
@@ -120,7 +131,7 @@ schemas/
 rules/
 ├ event_types/
 
-```
+
 
 New clients and event types are onboarded **via configuration only**.
 

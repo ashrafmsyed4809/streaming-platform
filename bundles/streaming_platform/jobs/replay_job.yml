@@ -1,0 +1,63 @@
+resources:
+  jobs:
+    streaming_platform_replay_job:
+      name: streaming_platform_replay_job
+
+      parameters:
+        - name: env
+          default: dev_tenant_02
+        - name: tenant_id
+          default: tenant_02
+        - name: config_file
+          default: configs/tenants/tenant_02/dev.yml
+        - name: start_date
+          default: 2026-03-10
+        - name: end_date
+          default: 2026-03-10
+        - name: event_types
+          default: temp_humidity.v1,temp_humidity.v2
+        - name: replay_mode
+          default: "true"
+        - name: apply_changes
+          default: "false"
+
+      job_clusters:
+        - job_cluster_key: platform_cluster
+          new_cluster:
+            spark_version: "16.4.x-scala2.12"
+            node_type_id: "Standard_D4ds_v4"
+            num_workers: 1
+            autotermination_minutes: 20
+            data_security_mode: "SINGLE_USER"
+            single_user_name: "info@justaboutdata.com"
+
+      tasks:
+        - task_key: silver_backfill
+          job_cluster_key: platform_cluster
+          notebook_task:
+            notebook_path: "${workspace.file_path}/bundles/streaming_platform/src/silver/silver_backfill"
+            base_parameters:
+              env: "{{job.parameters.env}}"
+              tenant_id: "{{job.parameters.tenant_id}}"
+              config_file: "{{job.parameters.config_file}}"
+              start_date: "{{job.parameters.start_date}}"
+              end_date: "{{job.parameters.end_date}}"
+              event_types: "{{job.parameters.event_types}}"
+              replay_mode: "{{job.parameters.replay_mode}}"
+              apply_changes: "{{job.parameters.apply_changes}}"
+
+        - task_key: gold_backfill
+          depends_on:
+            - task_key: silver_backfill
+          job_cluster_key: platform_cluster
+          notebook_task:
+            notebook_path: "${workspace.file_path}/bundles/streaming_platform/src/gold/gold_backfill"
+            base_parameters:
+              env: "{{job.parameters.env}}"
+              tenant_id: "{{job.parameters.tenant_id}}"
+              config_file: "{{job.parameters.config_file}}"
+              start_date: "{{job.parameters.start_date}}"
+              end_date: "{{job.parameters.end_date}}"
+              event_types: "{{job.parameters.event_types}}"
+              replay_mode: "{{job.parameters.replay_mode}}"
+              apply_changes: "{{job.parameters.apply_changes}}"
