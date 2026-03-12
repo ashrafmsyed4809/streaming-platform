@@ -1,0 +1,28 @@
+event_type: temp_humidity.v1
+
+rules:
+
+  - name: temperature_range
+    type: range
+    field: temperature_f
+    min: -40
+    max: 150
+    severity: error
+
+  - name: humidity_range
+    type: range
+    field: humidity_pct
+    min: 0
+    max: 100
+    severity: error
+
+  - name: battery_min
+    type: min_value
+    field: battery_pct
+    min: 0
+    severity: warn
+
+  - name: event_time_not_future
+    type: not_future
+    field: event_time
+    severity: error
