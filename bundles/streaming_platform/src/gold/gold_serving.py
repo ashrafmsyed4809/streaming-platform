@@ -89,5 +89,4 @@ print(f"[runner config] allowed_event_types={allowed_event_types}")
 
 # COMMAND ----------
 
-print("[runner] Project 05 quality stage enabled before Gold write")
 %run "/Users/info@justaboutdata.com/streaming-platform/gold/gold_collector_batch"
