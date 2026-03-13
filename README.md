@@ -11,7 +11,11 @@ This repository demonstrates a **config-driven streaming engine** where:
 
 The objective is to **onboard new clients and new streaming event types without modifying core pipeline code**.
 
+## Example Implementations
 
+This repository includes an example IoT streaming workload:
+
+- `examples/iot_temperature_monitoring` — Raspberry Pi temperature and humidity sensor streaming to Azure Event Hub.
 
 # 🎯 Purpose
 
